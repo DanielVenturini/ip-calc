@@ -1,0 +1,14 @@
+# depslib dependency file v1.0
+1504909947 source:/home/venturini/git/ipcalc/main.c
+	<stdlib.h>
+	<stdio.h>
+	<math.h>
+
+1504912571 source:/home/venturini/git/calculadora-ip/main.c
+	"lib/functions.h"
+
+1504915157 /home/venturini/git/calculadora-ip/lib/functions.h
+	<stdlib.h>
+	<stdio.h>
+	<math.h>
+
