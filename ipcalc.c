@@ -1,4 +1,4 @@
-#include "lib/functions.h"      //todas as funcoes estao implementadas aqui
+#include "functions.h"      //todas as funcoes estao implementadas aqui
 
 int parameters(int argc){
 

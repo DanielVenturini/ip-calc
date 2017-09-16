@@ -238,7 +238,7 @@ void sub_rede(int size){
     size += 2;                          //se queremos 'size' ips, entao nao consideramos o ip de origem nem o de broadcast
                                         //entao somamos 2 para garantir que, tirando esses dois ips, teremos a quantidade certa
 
-    printf("\n1. Requested size: %d.\n", size);
+    printf("\n1. Requested size: %d.\n", size-2);
 
     int i;
     for(i = 0; pow(2, i) < size; i ++); //descobre a quantidade minima para a quantidade de IP desejada.

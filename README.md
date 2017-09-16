@@ -1,6 +1,6 @@
-========================================
+----------------------------------------
 |        Redes de Computadores 2        |
-========================================
+----------------------------------------
 
 implementacao de uma calculadora de IP, que dado um IP, descobre:
   endereço de rede;
