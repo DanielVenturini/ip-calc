@@ -143,16 +143,22 @@ int address(){                  //funcao que verifica se o IP e valido octeto po
 	return TRUE;
 }
 
-int netmask(){                  //funcao que descobre o valor da mascara de acordo com o CIDR
-
-    char oc[2] = {'0','0'};     //somente aqui o CIDR eh descoberto e verificado se eh valido
+int netmaskCIDR(){
+    char oc[2] = {'0','0'};     //somente aqui o CIDR eh descoberto de acordo com o resto do ip passado no parametro
     oc[0] = ip[ultimaPos];
     oc[1] = ip[ultimaPos+1];
     int cc = atoi(oc);
     *cidr = cc;
+    return cc;
+}
 
-    if(cc > 32){                //se o CIDR for maior que 32 entao nao eh valido
-        return FALSE;
+int netmask(int cc){                  //funcao que descobre o valor da mascara de acordo com o CIDR
+
+    if(cc == -1){                       //se cc for passado como -1, entao nao foi descoberto o valor do CIDR
+        cc = netmaskCIDR();             //se nao for -1, entao eh porque o novo valor do CIDR esta em cc.
+        if(cc > 32 || cc < 0){                //se o CIDR for maior que 32 entao nao eh valido
+            return FALSE;
+        }
     }
 
     int elevado = 7;            //para calcular algum octeto da mascara, começa elevando dois a 7
@@ -202,10 +208,43 @@ int ipIsValid(){                    //funcao que verifica se o IP e a mascara sa
         return FALSE;
     }
 
-    if(!netmask()){
+    if(!netmask(-1)){
         printf("Illegal value for NETMASK (%d).\n", *cidr);
         return FALSE;
     }
 
     return TRUE;
+}
+
+void printSubRede(){                       //funcao que imprime o resultado
+
+    unsigned char notmask1 = ~*netmask1;    //pegando a negacao da mascara, necessaria para descobrir o ultimo enderedo da rede
+    unsigned char notmask2 = ~*netmask2;    //ultimo endereco: IP or (not MASCARA)
+    unsigned char notmask3 = ~*netmask3;
+    unsigned char notmask4 = ~*netmask4;
+
+    long int hosts = pow(2, 32-*cidr);      //numero maximo de hosts: 2 elevado a 32-CIDR
+
+    printf("Netmask: %d.%d.%d.%d\n", *netmask1, *netmask2, *netmask3, *netmask4);
+    printf("HostMin: %d.%d.%d.%d\n", *octeto1&*netmask1, *octeto2&*netmask2, *octeto3&*netmask3, (*octeto4&*netmask4)+1);
+    printf("HostMax: %d.%d.%d.%d\n", *octeto1|notmask1, *octeto2|notmask2, *octeto3|notmask3, *octeto4|notmask4-1);
+    printf("Broadcast: %d.%d.%d.%d\n", *octeto1|notmask1, *octeto2|notmask2, *octeto3|notmask3, *octeto4|notmask4);
+    printf("Hosts/Net: %ld\n", hosts-2);
+
+}
+
+void sub_rede(int size){
+
+    size += 2;                          //se queremos 'size' ips, entao nao consideramos o ip de origem nem o de broadcast
+                                        //entao somamos 2 para garantir que, tirando esses dois ips, teremos a quantidade certa
+
+    printf("\n1. Requested size: %d.\n", size);
+
+    int i;
+    for(i = 0; pow(2, i) < size; i ++); //descobre a quantidade minima para a quantidade de IP desejada.
+
+    *cidr = 32-i;                       //atualiza o cidr para a nova quantidade
+    netmask(*cidr);                     //recalcula a mascara
+
+    printSubRede();                     //somente printar o resultado
 }
